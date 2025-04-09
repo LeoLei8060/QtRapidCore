@@ -47,6 +47,12 @@ private:
     
     // 辅助函数：确保目录存在
     bool ensureDirectoryExists(const QString &dirPath);
+    
+    // 辅助函数：复制目录内容（包含子目录）
+    bool copyDirectory(const QString &sourceDir, const QString &destDir, bool recursive = true);
+    
+    // 辅助函数：复制单个文件
+    bool copyFile(const QString &sourceFilePath, const QString &targetFilePath);
 };
 
 #endif // PROJECTCREATOR_H
