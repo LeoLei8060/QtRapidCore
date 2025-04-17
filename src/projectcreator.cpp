@@ -195,22 +195,22 @@ bool ProjectCreator::createAppFiles(const QString &projectDir, const QMap<QStrin
     }
 
     // 创建main.cpp
-    QString mainContent = "#include <QApplication>\n";
-
+    QString mainContent;
     // 根据进程模式选择头文件，注意路径使用小写
     if (singleInstance) {
         mainContent += "#include \"singleapplication/singleapplication.h\"\n";
+        mainContent += "#include <QMessageBox>\n";
     } else {
         mainContent += "#include \"application/application.h\"\n";
     }
+
+    mainContent += "#include <QApplication>\n";
 
     // 根据项目类型选择头文件
     if (projectType == "QWidget") {
         mainContent += "#include \"ui/windows/" + projectNameLower + ".h\"\n\n";
     } else if (projectType == "QMainWindow") {
         mainContent += "#include \"ui/windows/" + projectNameLower + ".h\"\n\n";
-    } else if (projectType == "QQuick2ApplicationWindow") {
-        mainContent += "#include <QQmlApplicationEngine>\n\n";
     }
 
     mainContent += "int main(int argc, char *argv[])\n{\n";
@@ -218,6 +218,13 @@ bool ProjectCreator::createAppFiles(const QString &projectDir, const QMap<QStrin
     // 根据进程模式创建应用实例
     if (singleInstance) {
         mainContent += "    SingleApplication app(argc, argv);\n";
+
+        mainContent += "    if (app.isRunning()) {\n";
+        mainContent
+            += "        QMessageBox::warning(nullptr, \"警告\", \"应用程序已经在运行！\");\n";
+        mainContent += "        app.sendMessage(\"show\");\n";
+        mainContent += "        return 0;\n";
+        mainContent += "    }\n\n";
     } else {
         mainContent += "    Application app(argc, argv);\n";
     }
@@ -227,10 +234,6 @@ bool ProjectCreator::createAppFiles(const QString &projectDir, const QMap<QStrin
         mainContent += "\n    // 创建并显示主窗口\n";
         mainContent += "    " + projectName + " " + projectNameLower + ";\n";
         mainContent += "    " + projectNameLower + ".show();\n\n";
-    } else if (projectType == "QQuick2ApplicationWindow") {
-        mainContent += "\n    // 加载QML引擎\n";
-        mainContent += "    QQmlApplicationEngine engine;\n";
-        mainContent += "    engine.load(QUrl(QStringLiteral(\"qrc:/main.qml\")));\n\n";
     }
 
     mainContent += "    return app.exec();\n}\n";
@@ -313,16 +316,8 @@ bool ProjectCreator::createUIFiles(const QString &projectDir, const QMap<QString
     QString sourcePath = mainWindowDir + "/" + projectNameLower + ".cpp";
     QString formPath;
 
-    if (useForm && projectType != "QQuick2ApplicationWindow") {
+    if (useForm) {
         formPath = mainWindowDir + "/" + projectNameLower + ".ui";
-    } else if (projectType == "QQuick2ApplicationWindow") {
-        formPath = projectDir + "/resources/qml/main.qml";
-
-        // 确保QML目录存在
-        QDir qmlDir(projectDir + "/resources/qml");
-        if (!qmlDir.exists()) {
-            qmlDir.mkpath(".");
-        }
     }
 
     // 创建头文件
@@ -331,44 +326,20 @@ bool ProjectCreator::createUIFiles(const QString &projectDir, const QMap<QString
 
     if (projectType == "QWidget") {
         headerContent += "#include <QWidget>\n\n";
-        headerContent += "namespace Ui {\n";
-        headerContent += "class " + projectName + ";\n";
-        headerContent += "}\n\n";
+        if (useForm) {
+            headerContent += "namespace Ui {\n";
+            headerContent += "class " + projectName + ";\n";
+            headerContent += "}\n\n";
+        }
         headerContent += "class " + projectName + " : public QWidget\n";
     } else if (projectType == "QMainWindow") {
         headerContent += "#include <QMainWindow>\n\n";
-        headerContent += "namespace Ui {\n";
-        headerContent += "class " + projectName + ";\n";
-        headerContent += "}\n\n";
-        headerContent += "class " + projectName + " : public QMainWindow\n";
-    } else { // QQuick2ApplicationWindow - 这种情况下我们不需要创建C++类
-        // 创建QML文件
-        QString qmlContent = "import QtQuick 2.12\n";
-        qmlContent += "import QtQuick.Window 2.12\n";
-        qmlContent += "import QtQuick.Controls 2.12\n\n";
-        qmlContent += "ApplicationWindow {\n";
-        qmlContent += "    id: root\n";
-        qmlContent += "    visible: true\n";
-        qmlContent += "    width: 800\n";
-        qmlContent += "    height: 600\n";
-        qmlContent += "    title: qsTr(\"" + projectName + "\")\n\n";
-        qmlContent += "    Rectangle {\n";
-        qmlContent += "        anchors.fill: parent\n";
-        qmlContent += "        color: \"#f0f0f0\"\n\n";
-        qmlContent += "        Text {\n";
-        qmlContent += "            anchors.centerIn: parent\n";
-        qmlContent += "            text: qsTr(\"Welcome to " + projectName + "\")\n";
-        qmlContent += "            font.pixelSize: 24\n";
-        qmlContent += "        }\n";
-        qmlContent += "    }\n";
-        qmlContent += "}\n";
-
-        if (!writeToFile(formPath, qmlContent)) {
-            return false;
+        if (useForm) {
+            headerContent += "namespace Ui {\n";
+            headerContent += "class " + projectName + ";\n";
+            headerContent += "}\n\n";
         }
-
-        // 我们不需要创建C++类文件
-        return true;
+        headerContent += "class " + projectName + " : public QMainWindow\n";
     }
 
     headerContent += "{\n";
@@ -377,7 +348,9 @@ bool ProjectCreator::createUIFiles(const QString &projectDir, const QMap<QString
     headerContent += "    explicit " + projectName + "(QWidget *parent = nullptr);\n";
     headerContent += "    ~" + projectName + "();\n\n";
     headerContent += "private:\n";
-    headerContent += "    Ui::" + projectName + " *ui;\n";
+    if (useForm) {
+        headerContent += "    Ui::" + projectName + " *ui;\n";
+    }
     headerContent += "};\n\n";
     headerContent += "#endif // " + projectName.toUpper() + "_H\n";
 
@@ -396,17 +369,21 @@ bool ProjectCreator::createUIFiles(const QString &projectDir, const QMap<QString
     sourceContent += projectName + "::" + projectName + "(QWidget *parent) :\n";
 
     if (projectType == "QWidget") {
-        sourceContent += "    QWidget(parent),\n";
+        sourceContent += "    QWidget(parent)";
+
     } else if (projectType == "QMainWindow") {
-        sourceContent += "    QMainWindow(parent),\n";
+        sourceContent += "    QMainWindow(parent)";
     }
+    if (useForm)
+        sourceContent += ",\n";
+    else
+        sourceContent += "\n";
 
     if (useForm) {
         sourceContent += "    ui(new Ui::" + projectName + ")\n";
         sourceContent += "{\n";
         sourceContent += "    ui->setupUi(this);\n";
     } else {
-        sourceContent += "    ui(nullptr)\n";
         sourceContent += "{\n";
         sourceContent += "    // 手动设置UI\n";
         sourceContent += "    resize(800, 600);\n";
@@ -416,7 +393,9 @@ bool ProjectCreator::createUIFiles(const QString &projectDir, const QMap<QString
     sourceContent += "}\n\n";
     sourceContent += projectName + "::~" + projectName + "()\n";
     sourceContent += "{\n";
-    sourceContent += "    delete ui;\n";
+    if (useForm) {
+        sourceContent += "    delete ui;\n";
+    }
     sourceContent += "}\n";
 
     if (!writeToFile(sourcePath, sourceContent)) {
@@ -469,58 +448,11 @@ bool ProjectCreator::createUIFiles(const QString &projectDir, const QMap<QString
 bool ProjectCreator::createResourceFiles(const QString                 &projectDir,
                                          const QMap<QString, QVariant> &config)
 {
-    bool useStylesheet = config["useStylesheet"].toBool();
-    bool useIconFont = config["useIconFont"].toBool();
-
     // 创建资源文件
     QString qrcContent = "<!DOCTYPE RCC>\n";
     qrcContent += "<RCC version=\"1.0\">\n";
 
-    if (useStylesheet) {
-        qrcContent += "    <qresource prefix=\"/qss\">\n";
-        qrcContent += "        <file>resources/qss/style.qss</file>\n";
-        qrcContent += "    </qresource>\n";
-
-        // 创建样式表文件
-        QString qssContent = "/* 全局样式 */\n";
-        qssContent += "QWidget {\n";
-        qssContent += "    font-family: \"Microsoft YaHei\", \"SimHei\", sans-serif;\n";
-        qssContent += "    font-size: 12px;\n";
-        qssContent += "}\n\n";
-        qssContent += "/* 主窗口样式 */\n";
-        qssContent += "QMainWindow {\n";
-        qssContent += "    background-color: #f5f5f5;\n";
-        qssContent += "}\n\n";
-        qssContent += "/* 按钮样式 */\n";
-        qssContent += "QPushButton {\n";
-        qssContent += "    background-color: #2980b9;\n";
-        qssContent += "    color: white;\n";
-        qssContent += "    border: none;\n";
-        qssContent += "    padding: 5px 15px;\n";
-        qssContent += "    border-radius: 3px;\n";
-        qssContent += "}\n\n";
-        qssContent += "QPushButton:hover {\n";
-        qssContent += "    background-color: #3498db;\n";
-        qssContent += "}\n\n";
-        qssContent += "QPushButton:pressed {\n";
-        qssContent += "    background-color: #1c6ea4;\n";
-        qssContent += "}\n";
-
-        if (!writeToFile(projectDir + "/resources/qss/style.qss", qssContent)) {
-            return false;
-        }
-    }
-
-    if (useIconFont) {
-        qrcContent += "    <qresource prefix=\"/font\">\n";
-        qrcContent += "        <file>resources/font/fontawesome.ttf</file>\n";
-        qrcContent += "    </qresource>\n";
-
-        // 注：这里我们只是创建了资源引用，实际上需要用户提供字体文件
-    }
-
-    qrcContent += "    <qresource prefix=\"/img\">\n";
-    qrcContent += "        <file>resources/img/app_icon.png</file>\n";
+    qrcContent += "    <qresource prefix=\"/\">\n";
     qrcContent += "    </qresource>\n";
     qrcContent += "</RCC>\n";
 
@@ -561,27 +493,19 @@ bool ProjectCreator::createCMakeListsFile(const QString                 &project
     if (qt6Compatibility) {
         qtFindPackage = "# 查找Qt包（Qt6或Qt5）\n";
         qtFindPackage += "find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets";
-
-        if (projectType == "QQuick2ApplicationWindow") {
-            qtFindPackage += " Qml Quick QuickControls2";
-        }
-
+        if (singleInstance)
+            qtFindPackage += " Network";
         qtFindPackage += ")\n";
+
         qtFindPackage += "find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets";
-
-        if (projectType == "QQuick2ApplicationWindow") {
-            qtFindPackage += " Qml Quick QuickControls2";
-        }
-
+        if (singleInstance)
+            qtFindPackage += " Network";
         qtFindPackage += ")";
     } else {
         qtFindPackage = "# 查找Qt5包\n";
         qtFindPackage += "find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets";
-
-        if (projectType == "QQuick2ApplicationWindow") {
-            qtFindPackage += " Qml Quick QuickControls2";
-        }
-
+        if (singleInstance)
+            qtFindPackage += " Network";
         qtFindPackage += ")";
     }
     cmakeContent.replace("${QT_FIND_PACKAGE}", qtFindPackage);
@@ -599,14 +523,12 @@ bool ProjectCreator::createCMakeListsFile(const QString                 &project
 
     // 设置UI层文件
     QString uiFiles;
-    if (projectType != "QQuick2ApplicationWindow") {
-        uiFiles = "\n    # UI层\n";
-        uiFiles += "    ui/windows/" + projectName.toLower() + ".h\n";
-        uiFiles += "    ui/windows/" + projectName.toLower() + ".cpp";
+    uiFiles = "\n    # UI层\n";
+    uiFiles += "    ui/windows/" + projectName.toLower() + ".h\n";
+    uiFiles += "    ui/windows/" + projectName.toLower() + ".cpp";
 
-        if (useForm) {
-            uiFiles += "\n    ui/windows/" + projectName.toLower() + ".ui";
-        }
+    if (useForm) {
+        uiFiles += "\n    ui/windows/" + projectName.toLower() + ".ui";
     }
     cmakeContent.replace("${UI_FILES}", uiFiles);
 
@@ -644,20 +566,16 @@ bool ProjectCreator::createCMakeListsFile(const QString                 &project
         qtLibraries += "    Qt${QT_VERSION_MAJOR}::Gui\n";
         qtLibraries += "    Qt${QT_VERSION_MAJOR}::Widgets";
 
-        if (projectType == "QQuick2ApplicationWindow") {
-            qtLibraries += "\n    Qt${QT_VERSION_MAJOR}::Qml\n";
-            qtLibraries += "    Qt${QT_VERSION_MAJOR}::Quick\n";
-            qtLibraries += "    Qt${QT_VERSION_MAJOR}::QuickControls2";
+        if (singleInstance) {
+            qtLibraries += "\n    Qt${QT_VERSION_MAJOR}::Network\n";
         }
     } else {
         qtLibraries = "Qt5::Core\n";
         qtLibraries += "    Qt5::Gui\n";
         qtLibraries += "    Qt5::Widgets";
 
-        if (projectType == "QQuick2ApplicationWindow") {
-            qtLibraries += "\n    Qt5::Qml\n";
-            qtLibraries += "    Qt5::Quick\n";
-            qtLibraries += "    Qt5::QuickControls2";
+        if (singleInstance) {
+            qtLibraries += "\n    Qt5::Network\n";
         }
     }
     cmakeContent.replace("${QT_LIBRARIES}", qtLibraries);

@@ -75,11 +75,6 @@
            <string>QMainWindow</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>QQuick2ApplicationWindow</string>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="3" column="1">
@@ -200,12 +195,18 @@
          <property name="text">
           <string>使用样式表</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="useIconFontCheckBox">
          <property name="text">
           <string>使用Icon字体库</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -251,7 +252,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
