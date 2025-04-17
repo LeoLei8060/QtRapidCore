@@ -542,7 +542,7 @@ bool ProjectCreator::createCMakeListsFile(const QString                 &project
     bool    useForm = config["useForm"].toBool();
 
     // 读取模板文件
-    QFile templateFile(QDir::currentPath() + "/codeResources/templates/CMakeLists.txt.template");
+    QFile templateFile(QDir::currentPath() + "/templates/CMakeLists.txt.template");
     if (!templateFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         m_lastError = "无法打开CMakeLists.txt模板文件";
         return false;

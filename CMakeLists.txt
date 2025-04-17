@@ -15,3 +15,5 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets)
 
 # 添加子目录
 add_subdirectory(src)
+
+

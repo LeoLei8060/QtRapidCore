@@ -25,8 +25,7 @@ set(PROJECT_SOURCES
     infrastructure/event/qeventforwarder.cpp
     infrastructure/fonts/fontmanager.h
     infrastructure/fonts/fontmanager.cpp
-    infrastructure/logging/loghelper.h
-    infrastructure/logging/loghelper.cpp
+
     ${UI_FILES}
     ${RESOURCE_FILES}
 )
@@ -53,6 +52,16 @@ else()
         )
     endif()
 endif()
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/app
+    ${CMAKE_SOURCE_DIR}/data
+    ${CMAKE_SOURCE_DIR}/infrastructure
+    ${CMAKE_SOURCE_DIR}/thirdparty
+    ${CMAKE_SOURCE_DIR}/ui
+    ${CMAKE_SOURCE_DIR}/utils
+)
 
 # 链接Qt库
 target_link_libraries(${PROJECT_NAME} PRIVATE

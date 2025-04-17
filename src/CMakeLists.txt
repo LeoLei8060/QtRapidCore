@@ -27,3 +27,17 @@ install(TARGETS QtRapidCore
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_custom_command(TARGET QtRapidCore POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/codeResources"
+    "$<TARGET_FILE_DIR:QtRapidCore>/codeResources"
+    COMMENT "Copying resource folder to output directory"
+)
+
+add_custom_command(TARGET QtRapidCore POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_CURRENT_SOURCE_DIR}/../templates"
+    "$<TARGET_FILE_DIR:QtRapidCore>/templates"
+    COMMENT "Copying templates folder to output directory"
+)

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "logger.h"
+#include "log4qt/logger.h"
 
 #include <QMutex>
 
