@@ -8,6 +8,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     app/appconfigservice.h app/appconfigservice.cpp
 
     # Core
+    core/crash/crashhandler.h core/crash/crashhandler.cpp
     core/database/genericdao.h
 
     core/event/qeventforwarder.h
