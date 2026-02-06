@@ -1,0 +1,55 @@
+// 通用变量
+
+
+// 主界面样式变量
+MainWindowBackColor = #041e41
+
+// 按钮样式变量
+QBtnBackColor = transparent
+QBtnHoverBackColor = #66b4d7
+btn_normal_img = url(:/src/resources/img/btn_normal.png)
+btn_hover_img = url(:/src/resources/img/btn_hover.png)
+btn_pressed_img = url(:/src/resources/img/btn_click.png)
+
+// QLabel样式变量
+LabelTextColor = white
+
+// 控件边框颜色
+ControlBorderColor = white
+// 组件背景色
+ControlBackColor = #1e4066
+ControlTextColor = white
+
+// Font Awesome字体样式
+IconAwesome_FreeSolid = "Font Awesome 5 Free Solid"
+IconAwesome_FreeRegular = "Font Awesome 5 Free Regular"
+IconAwesome_BrandsRegular = "Font Awesome 5 Brands Regular"
+IconAwesome_Font = "iconfont"
+IconSize = 14pt
+
+// 系统控件图标变量
+SystemBtnTextColor = white
+SystemBtnBackColor_Normal = transparent
+SystemBtnBackColor_Hover = #014972
+SystemBtnBackColor_Click = transparent
+SystemCloseBtnBackColor_Hover = red
+
+SystemTitleLabel_FontSize = 14pt
+SystemTitleLabel_FontColor = white
+SystemTitleLabel_FontFamily = "微软雅黑"
+
+ModuleTitle_FontSize = 12pt
+ModuleTitle_FontColor = #7dc2fd
+ModuleTitle_FontFamily = "微软雅黑"
+
+// 配置小标题背景
+ConfigTitleBackColor = qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(2, 94, 151, 255), stop:1 rgba(112, 188, 221, 255))
+
+// 配置窗口背景色
+ConfigWidgetBackColor = #0e4976
+ParamConfigWidget_BackColor = #0f2d55
+
+// QComboBox组件参数
+ComBox_DownArrow_img_normal = url(:/src/resources/img/down_arrow_normal.png)
+ComBox_DownArrow_img_hover = url(:/src/resources/img/down_arrow_hover.png)
+ComBox_DownArrow_img_on = url(:/src/resources/img/down_arrow_click.png)

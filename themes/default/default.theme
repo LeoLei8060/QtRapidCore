@@ -1,0 +1,541 @@
+/* =============================================== */
+/* 通用组件样式                                    */
+/* =============================================== */
+/******************* QPushButton *******************/
+QPushButton {
+    border-image: {$btn_normal_img};
+    color: {$ControlTextColor};
+    border: none;
+    padding: 8px 16px;
+}
+QPushButton:hover {
+    border-image: {$btn_hover_img};
+}
+QPushButton:pressed {
+    border-image: {$btn_pressed_img};
+}
+
+/******************* QComboBox *******************/
+QComboBox {
+    background: none;
+    background-color: {$ControlBackColor};
+    min-height: 30px;
+    color: {$ControlTextColor};
+    border: none;
+}
+/* 下拉按钮区域 */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 30px;
+    border: none;
+}
+
+/* 箭头图标 - 正常状态 */
+QComboBox::down-arrow {
+    image: {$ComBox_DownArrow_img_normal};
+    width: 12px;
+    height: 12px;
+}
+
+/* 箭头图标 - 悬停状态 */
+QComboBox::down-arrow:hover {
+    image: {$ComBox_DownArrow_img_hover};
+}
+
+/* 箭头图标 - 按下状态 */
+QComboBox::down-arrow:on {
+    image: {$ComBox_DownArrow_img_on};  /* 展开时箭头向上 */
+}
+
+/* 禁用状态 */
+QComboBox::down-arrow:disabled {
+    image: {$ComBox_DownArrow_img_on};
+}
+/* 下拉列表视图 */
+QComboBox QAbstractItemView {
+    background-color: #2a5080;      /* 背景色 */
+    color: white;                    /* 文字颜色 */
+    border: 1px solid #555;          /* 边框 */
+    selection-background-color: #3a6090;  /* 选中项背景 */
+    selection-color: yellow;         /* 选中项文字颜色 */
+    outline: none;                   /* 去除虚线框 */
+}
+
+/* 列表项 */
+QComboBox QAbstractItemView::item {
+    height: 30px;                    /* 项高度 */
+    padding-left: 10px;              /* 左边距 */
+}
+
+/* 列表项悬停状态 */
+QComboBox QAbstractItemView::item:hover {
+    background-color: #4a7090;
+    color: white;
+}
+
+/* 列表项选中状态 */
+QComboBox QAbstractItemView::item:selected {
+    background-color: #3a6090;
+    color: yellow;
+}
+
+
+/******************* QRadioButton *******************/
+QRadioButton {
+    background: transparent;
+    color: {$ControlTextColor};
+}
+QRadioButton::indicator {
+    width: 20px;
+    height: 20px;
+}
+QRadioButton::indicator:unchecked {
+    image: url(:/src/resources/img/radiobtn_noselect_normal.png);
+}
+QRadioButton::indicator:checked {
+    image: url(:/src/resources/img/radiobtn_select_normal.png);
+}
+QRadioButton::indicator:unchecked:hover {
+    image: url(:/src/resources/img/radiobtn_noselect_hover.png);
+}
+QRadioButton::indicator:checked:hover {
+    image: url(:/src/resources/img/radiobtn_select_hover.png);
+}
+
+/* ========== QTableView 基础样式 ========== */
+QTableView {
+    border: none;                          /* 无边框 */
+    background-color: #0d4072;
+    gridline-color: transparent;           /* 隐藏网格线 */
+    outline: none;                         /* 去除焦点框 */
+    color: white;                          /* 字体颜色白色 */
+    font-size: 14px;
+    selection-background-color: #2980b9;   /* 选中背景色 */
+}
+
+/* ========== 表头样式 - 蓝色渐变 ========== */
+QHeaderView::section {
+    border: none;                          /* 表头无边框 */
+    border-bottom: 1px solid #041e41;
+    font-weight: bold;
+    font-size: 10pt;
+    color: white;                          /* 表头字体白色 */
+    /* 上到下的蓝色渐变 */
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #224a79,                    /* 顶部：亮蓝色 */
+        stop:1 #214171                     /* 底部：深蓝色 */
+    );
+}
+
+/* ========== 表格行样式 ========== */
+/* 单行（奇数行）背景色 */
+QTableView::item {
+    border: none;                          /* 行无边框 */
+    background-color: #05345d;             /* 单行颜色（灰蓝色） */
+    color: white;                          /* 字体白色 */
+    font-size: 10pt;
+}
+
+/* 双行（偶数行）背景色 */
+QTableView::item:alternate {
+    background-color: #0d4072;             /* 双行颜色（深灰蓝） */
+}
+
+/* 选中效果 */
+QTableView::item:selected {
+    background-color: #04498a;             /* 选中时深蓝色 */
+    color: white;
+}
+
+/* 去除焦点虚线框 */
+QTableView::item:focus {
+    outline: none;
+    border: none;
+}
+
+
+MainWindow {
+    background-color: {$MainWindowBackColor};
+}
+#widget_systemTitle {
+    border-image: url(:/src/resources/img/systemTitle.png);
+}
+#label_systemIcon {
+    background: transparent;
+    border-image: url(:/src/resources/img/systemIcon.png);
+}
+#label_systemTitle {
+    background: transparent;
+    color: {$SystemTitleLabel_FontColor};
+    font-size: {$SystemTitleLabel_FontSize};
+    font-weight: bold;
+    font-family: {$SystemTitleLabel_FontFamily};
+}
+
+/* =============================================== */
+/* 参数设置界面                                    */
+/* =============================================== */
+
+QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget {
+    background: transparent;
+    background-color: transparent;
+    border: none;
+}
+#configCenterWidget {
+    background-color: {$ParamConfigWidget_BackColor};
+}
+
+#widget_configTitle {
+    background-color: #1a3c69;
+    border-image: url(:/src/resources/img/param_module_back_400.png);
+}
+#widget_cmodule_title {
+    border: none;
+    border-bottom: 1px solid #0093ff;
+}
+#label_moduleIcon {
+    border-image: url(:/src/resources/img/yellowIcon.png);
+}
+#label_configTitle {
+    background: transparent;
+    color: {$ModuleTitle_FontColor};
+    font-size: {$ModuleTitle_FontSize};
+    font-family: {$ModuleTitle_FontFamily};
+}
+
+QLabel {
+    font-size: 10pt;
+    background: transparent;
+    color: {$LabelTextColor};
+}
+
+/* =============================================== */
+/* 工具栏                                          */
+/* =============================================== */
+QToolBar {
+    spacing: 10px;
+    background-color: #092a4b;
+}
+
+QToolTip { border: 0px solid red; background: red; color: white; }
+
+#toolBtn_new, #toolBtn_open, #toolBtn_save, #toolBtn_saveas, #toolBtn_close, #toolBtn_situation, #toolBtn_spd,
+#toolBtn_startSim, #toolBtn_stopSim {
+    min-width: 38px;
+    min-height: 36px;
+    max-width: 38px;
+    max-height: 36px;
+    border: none;
+    padding: 4px 4px;
+}
+
+#toolBtn_new {
+    border-image: url(:/src/resources/img/add_normal.png);
+}
+#toolBtn_new:hover {
+    border-image: url(:/src/resources/img/add_hover.png);
+}
+#toolBtn_new:pressed {
+    border-image: url(:/src/resources/img/add_click.png);
+}
+
+#toolBtn_open {
+    border-image: url(:/src/resources/img/open_normal.png);
+    border: none;
+}
+#toolBtn_open:hover {
+    border-image: url(:/src/resources/img/open_hover.png);
+}
+#toolBtn_open:pressed {
+    border-image: url(:/src/resources/img/open_click.png);
+}
+
+#toolBtn_save {
+    border-image: url(:/src/resources/img/save_normal.png);
+    border: none;
+}
+#toolBtn_save:hover {
+    border-image: url(:/src/resources/img/save_hover.png);
+}
+#toolBtn_save:pressed {
+    border-image: url(:/src/resources/img/save_click.png);
+}
+
+#toolBtn_saveas {
+    border-image: url(:/src/resources/img/saveas_normal.png);
+    border: none;
+}
+#toolBtn_saveas:hover {
+    border-image: url(:/src/resources/img/saveas_hover.png);
+}
+#toolBtn_saveas:pressed {
+    border-image: url(:/src/resources/img/saveas_click.png);
+}
+
+#toolBtn_close {
+    border-image: url(:/src/resources/img/close_normal.png);
+    border: none;
+}
+#toolBtn_close:hover {
+    border-image: url(:/src/resources/img/close_hover.png);
+}
+#toolBtn_close:pressed {
+    border-image: url(:/src/resources/img/close_click.png);
+}
+
+#toolBtn_situation {
+    border-image: url(:/src/resources/img/ts_normal.png);
+    min-width: 44px;
+    max-width: 44px;
+}
+#toolBtn_situation:hover {
+    border-image: url(:/src/resources/img/ts_hover.png);
+}
+#toolBtn_situation:pressed {
+    border-image: url(:/src/resources/img/ts_click.png);
+}
+
+#toolBtn_spd {
+    border-image: url(:/src/resources/img/spd_normal.png);
+    min-width: 44px;
+    max-width: 44px;
+}
+#toolBtn_spd:hover {
+    border-image: url(:/src/resources/img/spd_hover.png);
+}
+#toolBtn_spd:pressed {
+    border-image: url(:/src/resources/img/spd_click.png);
+}
+
+#toolBtn_startSim {
+    border-image: url(:/src/resources/img/start_normal.png);
+    border: none;
+}
+#toolBtn_startSim:hover {
+    border-image: url(:/src/resources/img/start_hover.png);
+}
+#toolBtn_startSim:pressed {
+    border-image: url(:/src/resources/img/start_click.png);
+}
+
+#toolBtn_stopSim {
+    border-image: url(:/src/resources/img/stop_normal.png);
+    border: none;
+}
+#toolBtn_stopSim:hover {
+    border-image: url(:/src/resources/img/stop_hover.png);
+}
+#toolBtn_stopSim:pressed {
+    border-image: url(:/src/resources/img/stop_click.png);
+}
+
+/* =============================================== */
+/* 状态栏                                          */
+/* =============================================== */
+QStatusBar {
+    background-color: #092a4b;
+    color: white;
+}
+
+QProgressBar {
+	border: 1px solid rgba(170, 170, 170, 0.6);
+	border-radius: 4px;       
+	background: transparent;
+	color: white;
+    text-align: center;
+	font-weight: bold;
+}
+QProgressBar::chunk {
+	background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #4DA6FF, stop:1 #1A53FF);
+	border-radius: 3px;   
+	width: 4px;
+	margin: 2px;
+}
+QProgressBar[indeterminate="true"]::chunk {
+	background: #999999;
+	border-radius: 3px;   
+	width: 4px;
+	margin: 2px;
+}
+
+#label_CModuleIcon
+{
+    border-image: url(:/src/resources/img/cmoduleIcon.png);
+}
+#label_NoiseModule, #label_CModuleTitle, #label_CModuleTitle_2, #label_CModuleTitle_3 {
+    font-size: 12pt;
+    font-family: "微软雅黑";
+    font-weight: bold;
+}
+
+/* 复合输入框组件 */
+UnitLineEdit {
+    min-height: 30px;
+    border: none;
+}
+UnitLineEdit QLineEdit {
+    min-height: 30px;
+    border: none;
+    background-color: {$ControlBackColor};
+    color: {$ControlTextColor};
+}
+UnitLineEdit QLineEdit[inputError="true"] {
+    border: 1px solid red;
+}
+
+
+QTextBrowser {
+    background: transparent;
+    border: 1px solid #0093ff;
+    border-radius: 5px;
+}
+
+
+IconButton, QToolButton {
+    border-image: none;
+    background-color: transparent;
+    color: {$SystemBtnTextColor};
+    font-family: {$IconAwesome_Font};
+    font-size: {$IconSize};
+    padding: 0px;
+    border: none;
+}
+IconButton:hover, QToolButton:hover {
+    background-color: {$QBtnHoverBackColor};
+}
+
+
+/* =============================================== */
+/* QTabWidget                                      */
+/* =============================================== */
+QTabWidget {
+    background-color: transparent;
+    border: none;
+}
+QTabWidget::pane {
+    background: #05345d;
+    border: none;
+    top: 0px;
+}
+QTabBar {
+    background-color: transparent;
+}
+QTabBar::tab {
+    background-color: transparent;
+    color: white;
+    height: 26px;
+    padding: 6px 10px;
+    border: none;
+}
+QTabBar::tab:hover {
+    color: #0088ff;
+}
+QTabBar::tab:selected {
+    background-color: transparent;
+    color: #0088ff;
+    border: none;
+    border-bottom: 2px solid #0088ff;
+}
+
+/* =============================================== */
+/* QScrollBar                                      */
+/* =============================================== */
+QScrollBar:vertical
+{
+	border: none;
+    background: transparent;
+    width: 10px;
+}
+QScrollBar::handle:vertical {
+     background: #1a3151;
+     min-height: 20px;
+     width: 10px;
+     border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+     background: #537A9E;
+}
+QScrollBar::add-line:vertical {
+     background: transparent;
+}
+
+QScrollBar::sub-line:vertical {
+     background: transparent;
+}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+     background: transparent;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+     background: transparent;
+}
+
+/*horizontal*/
+QScrollBar:horizontal {
+     border: none;
+     background: transparent;
+     height: 10px;
+}
+QScrollBar::handle:horizontal {
+     background: #1a3151;
+     min-width: 20px;
+     height: 10px;
+     border-radius: 5px;
+}
+QScrollBar::handle:horizontal:hover {
+     background: #537A9E;
+}
+QScrollBar::add-line:horizontal {
+     background: transparent;
+}
+
+QScrollBar::sub-line:horizontal {
+     background: transparent;
+}
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+     background: transparent;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+     background: transparent;
+}
+
+
+/* =============================================== */
+/* QSplitter                                       */
+/* =============================================== */
+QSplitter::handle {
+	background: transparent;
+}
+
+
+IconButton[objectName='addTabBtn']:hover {
+    background: transparent;
+    background-color: transparent;
+    color: #0088ff;
+    border: none;
+}
+
+GuideWidget {
+    border-image: url(:/src/resources/img/guideBack.png);
+}
+#btn_singleScreen {
+    border-image: url(:/src/resources/img/singleMode_normal.png);
+}
+#btn_singleScreen:hover {
+    border-image: url(:/src/resources/img/singleMode_hover.png);
+}
+#btn_singleScreen:pressed {
+    border-image: url(:/src/resources/img/singleMode_pressed.png);
+}
+#btn_dualScreen {
+    border-image: url(:/src/resources/img/dualMode_normal.png);
+}
+#btn_dualScreen:hover {
+    border-image: url(:/src/resources/img/dualMode_hover.png);
+}
+#btn_dualScreen:pressed {
+    border-image: url(:/src/resources/img/dualMode_pressed.png);
+}
