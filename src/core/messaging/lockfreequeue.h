@@ -7,6 +7,8 @@
 #define LFQ_NODE_COUNT 1024
 #define LFQ_NODE_SIZE  3000
 
+namespace Core {
+
 /**
  * @brief: 单生产者单消费者无锁队列 (SPSC Lock-Free Queue)
  * @author: Leo
@@ -138,3 +140,5 @@ private:
 };
 
 using LockFreeQueuePtr = std::shared_ptr<LockFreeQueue>;
+
+} // namespace Core

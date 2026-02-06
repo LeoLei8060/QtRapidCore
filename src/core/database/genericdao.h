@@ -13,6 +13,9 @@
 #include <QVariant>
 #include <QVector>
 
+namespace Core {
+namespace Database {
+
 // 翻页结果结构体
 template<typename T>
 struct PageResult
@@ -991,5 +994,8 @@ QString GenericDao<T>::lastError() const
 {
     return m_lastError;
 }
+
+} // namespace Database
+} // namespace Core
 
 #endif // GENERICDAO_H

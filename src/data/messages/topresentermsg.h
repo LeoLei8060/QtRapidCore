@@ -5,7 +5,7 @@
   * @brief: Presenter处理的消息
   * @author: Leo
   */
-#include "imessages.h"
+#include "messaging/imessages.h"
 #include <QObject>
 
 /// Example:

@@ -2,7 +2,7 @@
 #include "appconfigservice.h"
 #include "common/appdefines.h"
 #include "core/log/loghelper.h"
-#include "ui/components/fontmanager.h"
+#include "fontmanager.h"
 #include "utils/utils.h"
 #include <QDirIterator>
 

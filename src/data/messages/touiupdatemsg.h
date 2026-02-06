@@ -6,7 +6,7 @@
   * @author: Leo
   */
 
-#include "imessages.h"
+#include "messaging/imessages.h"
 #include <QObject>
 
 // Example:

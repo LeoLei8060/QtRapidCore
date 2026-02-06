@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QHostAddress>
 
+namespace Core {
+
 // #define USE_HEARTBEATTIMER
 
 // 静态成员初始化
@@ -162,7 +164,8 @@ bool UdpMulticastManager::startThread()
     // 启动线程
     m_stopThreads.store(false);
     if (m_role & kReceiver)
-        m_receiveThread = std::make_unique<std::thread>(&UdpMulticastManager::receiveThreadFunc, this);
+        m_receiveThread = std::make_unique<std::thread>(&UdpMulticastManager::receiveThreadFunc,
+                                                        this);
     if (m_role & kSender)
         m_sendThread = std::make_unique<std::thread>(&UdpMulticastManager::sendThreadFunc, this);
 
@@ -187,7 +190,11 @@ bool UdpMulticastManager::createSocket()
 
     // 设置socket选项：允许地址重用
     int reuse = 1;
-    if (setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&reuse), sizeof(reuse))
+    if (setsockopt(m_socket,
+                   SOL_SOCKET,
+                   SO_REUSEADDR,
+                   reinterpret_cast<const char *>(&reuse),
+                   sizeof(reuse))
         == SOCKET_ERROR) {
         LOGWARN("Failed to set SO_REUSEADDR: %1", getLastErrorString());
         closeSocket();
@@ -201,7 +208,8 @@ bool UdpMulticastManager::createSocket()
     localAddr.sin_addr.s_addr = INADDR_ANY;
     localAddr.sin_port = htons(m_port);
 
-    if (bind(m_socket, reinterpret_cast<sockaddr *>(&localAddr), sizeof(localAddr)) == SOCKET_ERROR) {
+    if (bind(m_socket, reinterpret_cast<sockaddr *>(&localAddr), sizeof(localAddr))
+        == SOCKET_ERROR) {
         LOGWARN("Failed to bind socket: %1", getLastErrorString());
         closeSocket();
         return false;
@@ -236,7 +244,8 @@ bool UdpMulticastManager::joinMulticastGroup()
 
     // 设置接收缓存
     int recvBufferSize = 64 * 1024 * 1024;
-    if (setsockopt(m_socket, SOL_SOCKET, SO_RCVBUF, (char *) &recvBufferSize, sizeof(recvBufferSize)) == SOCKET_ERROR) {
+    if (setsockopt(m_socket, SOL_SOCKET, SO_RCVBUF, (char *) &recvBufferSize, sizeof(recvBufferSize))
+        == SOCKET_ERROR) {
         LOGWARN("Failed to set recv buffer size: %1", getLastErrorString());
         return false;
     }
@@ -247,10 +256,15 @@ bool UdpMulticastManager::joinMulticastGroup()
 #ifndef BIND_LOCAL_IP
     mreq.imr_interface.s_addr = INADDR_ANY;
 #else
-    mreq.imr_interface.s_addr = inet_addr(AppConfigService::instance()->getLocalAddress().toStdString().c_str());
+    mreq.imr_interface.s_addr = inet_addr(
+        AppConfigService::instance()->getLocalAddress().toStdString().c_str());
 #endif
 
-    if (setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<const char *>(&mreq), sizeof(mreq))
+    if (setsockopt(m_socket,
+                   IPPROTO_IP,
+                   IP_ADD_MEMBERSHIP,
+                   reinterpret_cast<const char *>(&mreq),
+                   sizeof(mreq))
         == SOCKET_ERROR) {
         LOGWARN("Failed to join multicast group: %1", getLastErrorString());
         return false;
@@ -258,7 +272,11 @@ bool UdpMulticastManager::joinMulticastGroup()
 
     // 设置组播TTL
     int ttl = 64;
-    if (setsockopt(m_socket, IPPROTO_IP, IP_MULTICAST_TTL, reinterpret_cast<const char *>(&ttl), sizeof(ttl))
+    if (setsockopt(m_socket,
+                   IPPROTO_IP,
+                   IP_MULTICAST_TTL,
+                   reinterpret_cast<const char *>(&ttl),
+                   sizeof(ttl))
         == SOCKET_ERROR) {
         LOGWARN("Failed to set multicast TTL: %1", getLastErrorString());
         // 不是致命错误，继续执行
@@ -266,7 +284,11 @@ bool UdpMulticastManager::joinMulticastGroup()
 
     // 设置组播回环
     int loop = 1;
-    if (setsockopt(m_socket, IPPROTO_IP, IP_MULTICAST_LOOP, reinterpret_cast<const char *>(&loop), sizeof(loop))
+    if (setsockopt(m_socket,
+                   IPPROTO_IP,
+                   IP_MULTICAST_LOOP,
+                   reinterpret_cast<const char *>(&loop),
+                   sizeof(loop))
         == SOCKET_ERROR) {
         LOGWARN("Failed to set multicast loop: %1", getLastErrorString());
         // 不是致命错误，继续执行
@@ -275,8 +297,13 @@ bool UdpMulticastManager::joinMulticastGroup()
 // 设置发送组播的本地端口
 #ifdef BIND_LOCAL_IP
     struct in_addr local_interface;
-    local_interface.s_addr = inet_addr(AppConfigService::instance()->getLocalAddress().toStdString().c_str());
-    if (setsockopt(m_socket, IPPROTO_IP, IP_MULTICAST_IF, (char *) &local_interface, sizeof(local_interface))
+    local_interface.s_addr = inet_addr(
+        AppConfigService::instance()->getLocalAddress().toStdString().c_str());
+    if (setsockopt(m_socket,
+                   IPPROTO_IP,
+                   IP_MULTICAST_IF,
+                   (char *) &local_interface,
+                   sizeof(local_interface))
         == SOCKET_ERROR) {
         LOGWARN("Failed to set IP_MULTICAST_IF: %1", getLastErrorString());
     }
@@ -297,10 +324,15 @@ void UdpMulticastManager::leaveMulticastGroup()
 #ifndef BIND_LOCAL_IP
     mreq.imr_interface.s_addr = INADDR_ANY;
 #else
-    mreq.imr_interface.s_addr = inet_addr(AppConfigService::instance()->getLocalAddress().toStdString().c_str());
+    mreq.imr_interface.s_addr = inet_addr(
+        AppConfigService::instance()->getLocalAddress().toStdString().c_str());
 #endif
 
-    if (setsockopt(m_socket, IPPROTO_IP, IP_DROP_MEMBERSHIP, reinterpret_cast<const char *>(&mreq), sizeof(mreq))
+    if (setsockopt(m_socket,
+                   IPPROTO_IP,
+                   IP_DROP_MEMBERSHIP,
+                   reinterpret_cast<const char *>(&mreq),
+                   sizeof(mreq))
         == SOCKET_ERROR) {
         LOGWARN("Failed to leave multicast group: %1", getLastErrorString());
     } else {
@@ -348,8 +380,12 @@ void UdpMulticastManager::receiveThreadFunc()
 
         // TODO: 这里接收数据的缓存需要通过环形队列来得到
         // 接收数据
-        int bytesReceived
-            = recvfrom(m_socket, buffer, LFQ_NODE_SIZE, 0, reinterpret_cast<sockaddr *>(&senderAddr), &senderAddrLen);
+        int bytesReceived = recvfrom(m_socket,
+                                     buffer,
+                                     LFQ_NODE_SIZE,
+                                     0,
+                                     reinterpret_cast<sockaddr *>(&senderAddr),
+                                     &senderAddrLen);
 
         if (bytesReceived == SOCKET_ERROR) {
             if (!m_stopThreads.load()) {
@@ -445,3 +481,4 @@ bool UdpMulticastManager::isValidMulticastAddress(const QString &address)
     // 组播地址范围：224.0.0.0 到 239.255.255.255
     return (addr >= 0xE0000000) && (addr <= 0xEFFFFFFF);
 }
+} // namespace Core

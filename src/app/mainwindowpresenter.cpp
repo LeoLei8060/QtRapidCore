@@ -1,7 +1,7 @@
 #include "mainwindowpresenter.h"
 #include "core/event/qeventforwarder.h"
 #include "core/log/loghelper.h"
-#include "data/topresentermsg.h"
+#include "messages/topresentermsg.h"
 #include "serialization/json.h"
 #include "ui/widgets/mainwindow.h"
 #include <QApplication>

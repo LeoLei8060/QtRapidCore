@@ -7,7 +7,7 @@
   * @author: Leo
   */
 
-#include "data/systemconfig.h"
+#include "config/systemconfig.h"
 #include <QObject>
 #include <QScopedPointer>
 

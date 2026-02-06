@@ -7,7 +7,7 @@
   * @author: Leo
   */
 
-#include "data/imessages.h"
+#include "messaging/imessages.h"
 #include <QObject>
 #include <QScopedPointer>
 

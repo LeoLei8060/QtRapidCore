@@ -9,6 +9,8 @@
 #include <cstdlib> // for posix_memalign on Unix/Linux
 #endif
 
+namespace Core {
+
 /**
  * @brief 跨平台的内存对齐分配函数
  * @param alignment 对齐字节数，必须是2的幂
@@ -295,3 +297,5 @@ uint32_t LockFreeQueue::capacity() const
 {
     return m_node_count;
 }
+
+} // namespace Core

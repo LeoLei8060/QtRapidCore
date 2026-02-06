@@ -7,7 +7,7 @@
 
 #include "core/event/qeventforwarder.h"
 #include "core/thread/threadpool.h"
-#include "data/touiupdatemsg.h"
+#include "messages/touiupdatemsg.h"
 #include <QDateTime>
 #include <QDebug>
 #include <QObject>
